@@ -2,6 +2,11 @@ CNAME = bf
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror 
 
+debug : src/* 
+	cd obj/ ; $(CC) -c ../src/* $(CFLAGS) -g
+	cd ..
+	$(CC) obj/* -o $(CNAME) 
+
 $(CNAME) : src/* 
 	cd obj/ ; $(CC) -c ../src/* $(CFLAGS)	
 	cd ..

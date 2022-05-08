@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+// TODO
 // loop range erros
 
 void loop(char *memcell, char *bfcode);
@@ -36,17 +37,18 @@ char *bfloop(char *bfcode){
 // function thar read code and executes it 
 // the function is separated from master_interpreter to have the compatibility to have loops and execute 
 // the code between the loops 
-void bfcore(char *bfcode){
+void bfcore(char *bfcode, int* cfxindex){
 	int codesize = strlen(bfcode);			// used to read the bf code 
 	// reading the file_content and executing the code 
 	// reading an processing the code 
-	while (cfindex < codesize){
+
+	while (*cfxindex < codesize){
 		// checking if the index has gone out of range
 		if (mindex < 0 || mindex  > 30000){
 			fprintf(stderr, "RANGE ERROR\n");
 			exit(EXIT_FAILURE);
 		}
-		switch (bfcode[cfindex]){
+		switch (bfcode[*cfxindex]){
 			case '+':
 				memblocks[mindex]++;
 				break;
@@ -71,9 +73,9 @@ void bfcore(char *bfcode){
 				loop(&memblocks[mindex], loopcode);
 				break;
 			default :			// ignoring any char that isnt bf code  
-				cfindex = cfindex;
-		}	
-		cfindex++;
+				*cfxindex = *cfxindex;
+		}
+		*cfxindex = *cfxindex + 1;
 	}
 }
 
@@ -81,14 +83,15 @@ void bfcore(char *bfcode){
 // memcell : the current cell at the loop 
 // bfcode : the code between []
 void loop(char *memcell, char *bfcode){
-	while (*memcell != 0){			// while the content of the cell doesnt equal 0
-		bfcore(bfcode);				// execute the code between the loop 	
+
+	while (*memcell){			// while the content of the cell doesnt equal 0
+		int loopindex = 0;
+		bfcore(bfcode, &loopindex);				// execute the code between the loop 	
 	}
 }
 
 void master_interpreter(char *filename){
 	char *file_content = loadfile(filename);		// the pure bfcode, without comments  
-
-	bfcore(file_content);
+	bfcore(file_content, &cfindex);
 	free(file_content);
 }
